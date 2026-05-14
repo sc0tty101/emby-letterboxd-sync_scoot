@@ -51,16 +51,8 @@ from bs4 import BeautifulSoup
 from rapidfuzz import fuzz
 
 def load_config():
-    """
-    Load the configuration from the CONFIG_FILE.
-    If the configuration file does not exist, it initiates the setup process.
-    
-    Returns:
-        dict: The loaded configuration.
-    """
     if not os.path.exists(CONFIG_FILE):
-        print(f"Config file '{CONFIG_FILE}' is missing. Running setup...")
-        init_config()
+        return init_config()
     with open(CONFIG_FILE, 'r') as file:
         return json.load(file)
 
@@ -75,14 +67,12 @@ def save_config(config):
         json.dump(config, file, indent=4)
 
 def init_config():
-    """
-    Set up the initial configuration by prompting the user for Emby server details and synchronisation interval.
-    Saves the configuration to CONFIG_FILE.
-    """
-    print("Setting up the configuration...")
-    emby_url = input("Enter the Emby server URL (e.g., http://192.168.0.254:8096): ").strip()
-    emby_api_key = input("Enter the Emby API Key: ").strip()
-    interval = input("Enter the interval to grab the list (in milliseconds): ").strip()
+    emby_url = os.environ.get("EMBY_URL")
+    emby_api_key = os.environ.get("EMBY_API_KEY")
+    interval = os.environ.get("SYNC_INTERVAL_MS", "300000")
+
+    if not emby_url or not emby_api_key:
+        raise RuntimeError("Missing required environment variables: EMBY_URL and EMBY_API_KEY must be set.")
 
     config = {
         "emby_url": emby_url,
@@ -92,6 +82,7 @@ def init_config():
     }
     save_config(config)
     print(f"Configuration saved to '{CONFIG_FILE}'.")
+    return config
 
 def get_letterboxd_watchlist(username):
     """
