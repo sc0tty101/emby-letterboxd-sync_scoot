@@ -151,7 +151,7 @@ def get_emby_user_id(emby_username, config):
     return None
 
 def init_playlist(user_id, playlist_name, config):
-    playlist_url = f"{config['emby_url']}/Users/{user_id}/Items?IncludeItemTypes=Playlist&api_key={config['emby_api_key']}"
+    playlist_url = f"{config['emby_url']}/Users/{user_id}/Items?IncludeItemTypes=Playlist&Recursive=true&api_key={config['emby_api_key']}"
     try:
         response = requests.get(playlist_url)
         response.raise_for_status()
