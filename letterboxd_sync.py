@@ -8,7 +8,7 @@ import time
 import requests
 import re
 import logging
-CONFIG_FILE = "config.json"
+CONFIG_FILE = os.path.join(os.environ.get("CONFIG_DIR", "/data"), "config.json")
 
 def init_dependencies():
     REQUIRED_PACKAGES = ['beautifulsoup4', 'requests', 'rapidfuzz']
